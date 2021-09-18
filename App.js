@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo , useState } from 'react';
 import { StyleSheet, Text, View , FlatList, SafeAreaView} from 'react-native';
 import ListItem from './components/ListItem';
 import {SAMPLE_DATA} from './assets/data/SampleData';
 import {  BottomSheetModal,  BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-
+import Chart from './components/Chart';
 
 const ListHeader = () => (
   <>
@@ -19,15 +19,15 @@ const ListHeader = () => (
 
 
 export default function App() {
-
+  const [selectedCoin, setSelectedCoin] = useState(null);
   const bottomSheetModalRef = useRef(null);
 
-  const snapPoints = useMemo(() => ['25%'], []);
-  //callback to the modal to open and close
-  // const handlePresentModalPress = useCallback(() => {    bottomSheetModalRef.current?.present();  }, []);  
-  // const handleSheetChanges = useCallback((index: number) => {    console.log('handleSheetChanges', index);  }, []);
+  const snapPoints = useMemo(() => ['50%'], []);
 
-
+  const openModal = (item) => {
+    setSelectedCoin(item);
+    bottomSheetModalRef.current.present();
+  }
 
   return (
   
@@ -45,6 +45,7 @@ export default function App() {
                 currentPrice = {item.current_price}
                 priceChangePercentage7d = {item.price_change_percentage_7d_in_currency}
                 logourl = {item.image}
+                onPress = {() => openModal(item)}
               />
           )}
           ListHeaderComponent={<ListHeader/>}
@@ -56,13 +57,18 @@ export default function App() {
         ref={bottomSheetModalRef} 
         index={0}          
         snapPoints={snapPoints}          
-        
+        style = {styles.bottomSheet}
       >
-
-        <View style={styles.contentContainer}>            
-          <Text>Awesome 🎉</Text>          
-        </View>
-
+        { selectedCoin ? (
+        <Chart
+          currentPrice={selectedCoin.current_price}
+          logourl={selectedCoin.image}
+          name={selectedCoin.name}
+          priceChangePercentage7d={selectedCoin.price_change_percentage_7d_in_currency}
+          sparkline={selectedCoin.sparkline_in_7d.price}
+          symbol={selectedCoin.symbol}
+        />
+        ):null}
       </BottomSheetModal>
     </BottomSheetModalProvider>
  
@@ -87,5 +93,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     marginHorizontal: 20,
     marginTop:20,
-  }
+  },
+  bottomSheet: {
+    shadowColor: '#000',
+    shadowOffset:{
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation:5,
+  },
+  contentContainer: {
+    margin:8,
+  },
 });
