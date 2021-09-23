@@ -1,5 +1,13 @@
 import React from 'react';
-import { View , Text, StyleSheet, Image } from 'react-native';
+import { View , Text, StyleSheet, Image, Dimensions } from 'react-native';
+// import Plot from 'react-plotly.js';
+import Linechart from './Graphs/Linechart';
+// import { VictoryChart, VictoryLine, VictoryTheme } from "victory-native";
+
+// dimensions for the plotly chart 
+export const {width : SIZE} = Dimensions.get('window');
+const chartHeight = SIZE * 0.5;
+
 
 const Chart = ({ currentPrice, logourl, name, priceChangePercentage7d, sparkline, symbol }) => {
     const priceChangeColor = priceChangePercentage7d > 0 ? "#34C759" : "#ff3a30";
@@ -12,11 +20,9 @@ const Chart = ({ currentPrice, logourl, name, priceChangePercentage7d, sparkline
                     <View style={styles.coinTitleWrapper}> 
                         <Image source={{ uri: logourl }} style={styles.coinLogo} />
                         <Text style={styles.coinName}>{name} ({symbol.toUpperCase()}) </Text>
-                        
                     </View>
 
                     <Text style={styles.coinName}>7d</Text> 
-                   
 
                 </View>
  
@@ -27,6 +33,11 @@ const Chart = ({ currentPrice, logourl, name, priceChangePercentage7d, sparkline
 
                 </View>
 
+                {/* Chart plot */}
+
+                <View style={styles.chartWrapper}>
+                   <Linechart/>
+                </View>
 
             </View>
         </View>
@@ -49,8 +60,6 @@ const styles =StyleSheet.create({
         
         flexDirection: 'row',
         alignItems  : 'center',
-        
-        
     },
     coinLogo:{  
         width:30,
@@ -75,6 +84,14 @@ const styles =StyleSheet.create({
     priceChange:{
         fontSize:20,
     },
+    chartWrapper:{
+        marginLeft:-30
+    }
 })
 
 export default Chart;
+
+
+// dependencies 
+// "react-plotly.js": "^2.5.1"
+// "plotly.js": "^2.5.1",
