@@ -1,8 +1,7 @@
 import React from 'react';
 import { View , Text, StyleSheet, Image, Dimensions } from 'react-native';
-// import Plot from 'react-plotly.js';
 import Linechart from './Graphs/Linechart';
-// import { VictoryChart, VictoryLine, VictoryTheme } from "victory-native";
+
 
 // dimensions for the plotly chart 
 export const {width : SIZE} = Dimensions.get('window');
@@ -34,9 +33,10 @@ const Chart = ({ currentPrice, logourl, name, priceChangePercentage7d, sparkline
                 </View>
 
                 {/* Chart plot */}
-
+                
                 <View style={styles.chartWrapper}>
-                   <Linechart/>
+                    
+                   <Linechart priceChangePercentage7d = {priceChangePercentage7d} dataSparkline = {sparkline}/>
                 </View>
 
             </View>
@@ -91,7 +91,3 @@ const styles =StyleSheet.create({
 
 export default Chart;
 
-
-// dependencies 
-// "react-plotly.js": "^2.5.1"
-// "plotly.js": "^2.5.1",

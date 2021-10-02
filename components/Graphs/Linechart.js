@@ -1,27 +1,60 @@
-import React from 'react';
-import { View , Text, StyleSheet, Image, Dimensions } from 'react-native';
-import { VictoryChart, VictoryLine, VictoryTheme } from "victory-native";
+import React , {useEffect} from 'react';
+import { View } from 'react-native';
+import { VictoryChart, VictoryLine, VictoryTheme, createContainer } from "victory-native";
 
-const Linechart = () =>{
+const Linechart = ( { priceChangePercentage7d , dataSparkline } ) =>{
+
+    useEffect(() => {
+        let chartData = formatChartData(dataSparkline);
+        return chartData;
+    }, []);
+
+    const priceChangeColor = priceChangePercentage7d > 0 ? "#34C759" : "#ff3a30";
+
+    
+
+    const formatChartData = ({dataSparkline}) => {
+        const chartData = {};
+        const chartDataX = [];
+        const chartDataY = [];
+        dataSparkline.forEach(element => {
+            chartDataX.push(element.sparkline_in_7d.price.x);
+            chartDataY.push(element.sparkline_in_7d.price.y);
+        });
+        chartData = {chartDataX, chartDataY};
+        return chartData;
+    }
+    
+
+
+    const VictoryZoomVoronoiContainer = createContainer("zoom", "voronoi");
     return (
     <View>
-        <VictoryChart width = {400} height = {300} theme={VictoryTheme.material} >
+        <VictoryChart 
+            width = {400} 
+            height = {300} 
+            theme={VictoryTheme.material} 
+            containerComponent={ 
+                <VictoryZoomVoronoiContainer 
+                    labels={({ datum }) => $` ${(datum.y)}`}
+            />}
+        >
+
+
+
             <VictoryLine
             style={{
-                data: { stroke: "#c43a31" },
+                data: { stroke: priceChangeColor },  
                 parent: { border: "1px solid #ccc"}
             }}
-            data={[
-                { x: 1, y: 2 },
-                { x: 2, y: 3 },
-                { x: 3, y: 5 },
-                { x: 4, y: 4 },
-                { x: 5, y: 7 }
-            ]}
+            data= { {x:(chartData)=>{return chartData.foreach(chartDataX)} , y : (chartData)=>{return chartData.foreach(chartDataY)} } }
+               
+
             />
         </VictoryChart>
      </View>
     );
 };
+
 
 export default Linechart;
